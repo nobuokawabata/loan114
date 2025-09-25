@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -46,6 +46,32 @@ export default function DashboardPage() {
   const [responseText, setResponseText] = useState("")
   const [previewOpen, setPreviewOpen] = useState(false)
 
+  const [dashboardStats, setDashboardStats] = useState<any[]>([])
+  const [applicationData, setApplicationData] = useState<any[]>([])
+  const [reviewData, setReviewData] = useState<any[]>([])
+  const [documents, setDocuments] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const statsRes = await fetch("/api/dashboard-stats")
+      const statsData = await statsRes.json()
+      setDashboardStats(statsData)
+
+      const appsRes = await fetch("/api/applications")
+      const appsData = await appsRes.json()
+      setApplicationData(appsData)
+
+      const reviewsRes = await fetch("/api/reviews")
+      const reviewsData = await reviewsRes.json()
+      setReviewData(reviewsData)
+
+      const docsRes = await fetch("/api/documents")
+      const docsData = await docsRes.json()
+      setDocuments(docsData)
+    }
+    fetchData()
+  }, [])
+
   const handleLogout = () => {
     window.location.href = "/"
   }
@@ -79,471 +105,6 @@ export default function DashboardPage() {
     return date.toISOString().split("T")[0]
   }
 
-  const dashboardStats = [
-    {
-      title: "申込受付",
-      count: 8,
-      change: +2,
-      icon: FileText,
-      color: "bg-blue-500",
-    },
-    {
-      title: "担保評価",
-      count: 12,
-      change: +1,
-      icon: Building2,
-      color: "bg-green-500",
-    },
-    {
-      title: "個信照会",
-      count: 10,
-      change: -1,
-      icon: User,
-      color: "bg-yellow-500",
-    },
-    {
-      title: "スコアリング",
-      count: 8,
-      change: +3,
-      icon: Search,
-      color: "bg-purple-500",
-    },
-    {
-      title: "与信判定",
-      count: 7,
-      change: 0,
-      icon: CheckCircle,
-      color: "bg-orange-500",
-    },
-    {
-      title: "結果回答",
-      count: 5,
-      change: -2,
-      icon: Mail,
-      color: "bg-red-500",
-    },
-  ]
-
-  const applicationData = [
-    {
-      id: 1,
-      receivedAt: generateRelativeDatetime(0, 9, 30),
-      channel: "FAX",
-      status: "受付中",
-      applicantName: "田中太郎",
-    },
-    {
-      id: 2,
-      receivedAt: generateRelativeDatetime(0, 10, 15),
-      channel: "メール",
-      status: "確認中",
-      applicantName: "佐藤花子",
-    },
-    {
-      id: 3,
-      receivedAt: generateRelativeDatetime(1, 11, 0),
-      channel: "店頭",
-      status: "受付中",
-      applicantName: "鈴木一郎",
-    },
-    {
-      id: 4,
-      receivedAt: generateRelativeDatetime(1, 13, 45),
-      channel: "FAX",
-      status: "受付中",
-      applicantName: "高橋美咲",
-    },
-    {
-      id: 5,
-      receivedAt: generateRelativeDatetime(2, 14, 20),
-      channel: "メール",
-      status: "確認中",
-      applicantName: "伊藤健太",
-    },
-    {
-      id: 6,
-      receivedAt: generateRelativeDatetime(2, 15, 10),
-      channel: "店頭",
-      status: "受付中",
-      applicantName: "渡辺直子",
-    },
-    {
-      id: 7,
-      receivedAt: generateRelativeDatetime(3, 16, 30),
-      channel: "FAX",
-      status: "確認中",
-      applicantName: "中村雅人",
-    },
-    {
-      id: 8,
-      receivedAt: generateRelativeDatetime(4, 17, 0),
-      channel: "メール",
-      status: "受付中",
-      applicantName: "小林由美",
-    },
-  ]
-
-  const reviewData = [
-    {
-      id: 1,
-      applicantName: "山田次郎",
-      status: "担保評価",
-      amount: "5,000万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(5),
-    },
-    {
-      id: 2,
-      applicantName: "松本和子",
-      status: "担保評価",
-      amount: "3,200万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(8),
-    },
-    {
-      id: 3,
-      applicantName: "木村正雄",
-      status: "担保評価",
-      amount: "4,500万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(12),
-    },
-    {
-      id: 4,
-      applicantName: "林美香",
-      status: "担保評価",
-      amount: "2,800万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(15),
-    },
-    {
-      id: 5,
-      applicantName: "森田健司",
-      status: "担保評価",
-      amount: "6,000万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(18),
-    },
-    {
-      id: 6,
-      applicantName: "清水恵子",
-      status: "担保評価",
-      amount: "3,800万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(22),
-    },
-    {
-      id: 7,
-      applicantName: "池田光男",
-      status: "担保評価",
-      amount: "4,200万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(25),
-    },
-    {
-      id: 8,
-      applicantName: "橋本真理",
-      status: "担保評価",
-      amount: "2,500万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(3),
-    },
-    {
-      id: 9,
-      applicantName: "石川博",
-      status: "担保評価",
-      amount: "5,500万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(7),
-    },
-    {
-      id: 10,
-      applicantName: "青木千代",
-      status: "担保評価",
-      amount: "3,000万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(10),
-    },
-    {
-      id: 11,
-      applicantName: "藤田隆志",
-      status: "担保評価",
-      amount: "4,800万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(35),
-    },
-    {
-      id: 12,
-      applicantName: "岡田純子",
-      status: "担保評価",
-      amount: "2,200万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(2),
-    },
-    {
-      id: 13,
-      applicantName: "長谷川修",
-      status: "個信照会",
-      amount: "3,500万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(40),
-    },
-    {
-      id: 14,
-      applicantName: "村上智子",
-      status: "個信照会",
-      amount: "2,700万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(38),
-    },
-    {
-      id: 15,
-      applicantName: "近藤大輔",
-      status: "個信照会",
-      amount: "4,100万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(33),
-    },
-    {
-      id: 16,
-      applicantName: "斎藤麻衣",
-      status: "個信照会",
-      amount: "3,300万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(28),
-    },
-    {
-      id: 17,
-      applicantName: "遠藤康夫",
-      status: "個信照会",
-      amount: "5,200万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(20),
-    },
-    {
-      id: 18,
-      applicantName: "三浦由紀",
-      status: "個信照会",
-      amount: "2,900万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(16),
-    },
-    {
-      id: 19,
-      applicantName: "坂本誠",
-      status: "個信照会",
-      amount: "4,600万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(13),
-    },
-    {
-      id: 20,
-      applicantName: "井上綾子",
-      status: "個信照会",
-      amount: "3,700万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(9),
-    },
-    {
-      id: 21,
-      applicantName: "前田浩二",
-      status: "個信照会",
-      amount: "2,400万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(6),
-    },
-    {
-      id: 22,
-      applicantName: "金子奈美",
-      status: "個信照会",
-      amount: "5,800万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(4),
-    },
-    {
-      id: 23,
-      applicantName: "藤原良一",
-      status: "スコアリング",
-      amount: "4,300万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(45),
-    },
-    {
-      id: 24,
-      applicantName: "吉田理恵",
-      status: "スコアリング",
-      amount: "3,100万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(42),
-    },
-    {
-      id: 25,
-      applicantName: "西村達也",
-      status: "スコアリング",
-      amount: "5,700万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(39),
-    },
-    {
-      id: 26,
-      applicantName: "山口美穂",
-      status: "スコアリング",
-      amount: "2,600万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(37),
-    },
-    {
-      id: 27,
-      applicantName: "中島克己",
-      status: "スコアリング",
-      amount: "4,900万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(24),
-    },
-    {
-      id: 28,
-      applicantName: "田村香織",
-      status: "スコアリング",
-      amount: "3,400万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(19),
-    },
-    {
-      id: 29,
-      applicantName: "原田雄介",
-      status: "スコアリング",
-      amount: "2,100万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(14),
-    },
-    {
-      id: 30,
-      applicantName: "平野さくら",
-      status: "スコアリング",
-      amount: "6,200万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(11),
-    },
-    {
-      id: 31,
-      applicantName: "加藤信夫",
-      status: "与信判定",
-      amount: "4,700万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(50),
-    },
-    {
-      id: 32,
-      applicantName: "竹内優子",
-      status: "与信判定",
-      amount: "3,600万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(48),
-    },
-    {
-      id: 33,
-      applicantName: "小川哲郎",
-      status: "与信判定",
-      amount: "2,300万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(44),
-    },
-    {
-      id: 34,
-      applicantName: "安田恵美",
-      status: "与信判定",
-      amount: "5,400万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(41),
-    },
-    {
-      id: 35,
-      applicantName: "岩田正治",
-      status: "与信判定",
-      amount: "4,000万円",
-      assignee: "審査部B",
-      receivedDate: generateRelativeDate(26),
-    },
-    {
-      id: 36,
-      applicantName: "松井亜希",
-      status: "与信判定",
-      amount: "2,800万円",
-      assignee: "審査部C",
-      receivedDate: generateRelativeDate(23),
-    },
-    {
-      id: 37,
-      applicantName: "大野勝彦",
-      status: "与信判定",
-      amount: "5,100万円",
-      assignee: "審査部A",
-      receivedDate: generateRelativeDate(17),
-    },
-    {
-      id: 38,
-      applicantName: "福田明",
-      status: "結果回答",
-      amount: "3,900万円",
-      assignee: "審査部B",
-      receivedDate: "2023-12-01",
-      result: "承認",
-      conditions: "金利3.5%、期間20年",
-      reviewDate: generateReviewDate(2),
-    },
-    {
-      id: 39,
-      applicantName: "上田千春",
-      status: "結果回答",
-      amount: "2,700万円",
-      assignee: "審査部C",
-      receivedDate: "2023-12-03",
-      result: "条件付承認",
-      conditions: "保証人追加、金利4.0%",
-      reviewDate: generateReviewDate(1),
-    },
-    {
-      id: 40,
-      applicantName: "杉山俊夫",
-      status: "結果回答",
-      amount: "4,400万円",
-      assignee: "審査部A",
-      receivedDate: "2023-12-07",
-      result: "否認",
-      conditions: "収入不足のため",
-      reviewDate: generateReviewDate(3),
-    },
-    {
-      id: 41,
-      applicantName: "内田みどり",
-      status: "結果回答",
-      amount: "3,200万円",
-      assignee: "審査部B",
-      receivedDate: "2023-12-08",
-      result: "承認",
-      conditions: "金利3.2%、期間25年",
-      reviewDate: generateReviewDate(0),
-    },
-    {
-      id: 42,
-      applicantName: "横山和明",
-      status: "結果回答",
-      amount: "5,600万円",
-      assignee: "審査部C",
-      receivedDate: "2023-12-11",
-      result: "条件付承認",
-      conditions: "担保追加、金利3.8%",
-      reviewDate: generateReviewDate(1),
-    },
-  ]
-
-  const documents = [
-    { name: "送付状", code: "DOC001", received: true, receivedAt: "2024-01-10 09:30" },
-    { name: "正式審査申込書", code: "DOC002", received: true, receivedAt: "2024-01-10 09:30" },
-    { name: "本人確認資料", code: "DOC003", received: true, receivedAt: "2024-01-10 10:15" },
-    { name: "源泉徴収票", code: "DOC004", received: false, receivedAt: null },
-  ]
-
   const menuItems = [
     { id: "home", label: "ホーム", icon: Home },
     { id: "application", label: "申込受付", icon: FileText },
@@ -553,6 +114,17 @@ export default function DashboardPage() {
     { id: "review-settings", label: "審査設定", icon: Settings },
     { id: "master", label: "マスタ設定", icon: Settings },
   ]
+
+  const icons: { [key: string]: React.ElementType } = {
+    FileText,
+    Building2,
+    User,
+    Search,
+    CheckCircle,
+    Mail,
+    Fax,
+    Store,
+  }
 
   const getChannelIcon = (channel: string) => {
     switch (channel) {
@@ -683,8 +255,8 @@ export default function DashboardPage() {
           <div>
             <h2 className="text-xl font-semibold mb-4">案件ステータス</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {dashboardStats.map((stat, index) => {
-                const Icon = stat.icon
+              {dashboardStats.map((stat: any, index) => {
+                const Icon = icons[stat.icon]
                 return (
                   <Card
                     key={index}

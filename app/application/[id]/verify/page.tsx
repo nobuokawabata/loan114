@@ -39,193 +39,13 @@ const generateRelativeDatetime = (daysAgo: number) => {
 
 export default function VerifyPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-
-  const sampleApplications = [
-    {
-      id: 1,
-      receivedAt: generateRelativeDatetime(0),
-      channel: "Web",
-      applicantName: "田中太郎",
-      applicantKana: "タナカタロウ",
-      birthDate: "1980-05-15",
-      gender: "男性",
-      phone: "03-1234-5678",
-      email: "tanaka@example.com",
-      address: "東京都渋谷区1-1-1",
-      occupation: "会社員",
-      company: "株式会社サンプル",
-      annualIncome: "600",
-      loanAmount: "3000",
-      loanPurpose: "住宅購入",
-      loanPeriod: "35",
-      status: "受付済み",
-    },
-    {
-      id: 2,
-      receivedAt: generateRelativeDatetime(1),
-      channel: "電話",
-      applicantName: "佐藤花子",
-      applicantKana: "サトウハナコ",
-      birthDate: "1985-08-22",
-      gender: "女性",
-      phone: "090-2345-6789",
-      email: "sato@example.com",
-      address: "大阪府大阪市北区2-2-2",
-      occupation: "公務員",
-      company: "大阪市役所",
-      annualIncome: "500",
-      loanAmount: "2500",
-      loanPurpose: "マンション購入",
-      loanPeriod: "30",
-      status: "審査中",
-    },
-    {
-      id: 3,
-      receivedAt: generateRelativeDatetime(2),
-      channel: "店舗",
-      applicantName: "鈴木一郎",
-      applicantKana: "スズキイチロウ",
-      birthDate: "1975-12-10",
-      gender: "男性",
-      phone: "045-3456-7890",
-      email: "suzuki@example.com",
-      address: "神奈川県横浜市西区3-3-3",
-      occupation: "自営業",
-      company: "鈴木商店",
-      annualIncome: "700",
-      loanAmount: "4000",
-      loanPurpose: "事業資金",
-      loanPeriod: "20",
-      status: "承認",
-    },
-    {
-      id: 4,
-      receivedAt: generateRelativeDatetime(3),
-      channel: "Web",
-      applicantName: "高橋美咲",
-      applicantKana: "タカハシミサキ",
-      birthDate: "1990-03-18",
-      gender: "女性",
-      phone: "052-4567-8901",
-      email: "takahashi@example.com",
-      address: "愛知県名古屋市中区4-4-4",
-      occupation: "会社員",
-      company: "名古屋商事株式会社",
-      annualIncome: "450",
-      loanAmount: "2000",
-      loanPurpose: "車購入",
-      loanPeriod: "7",
-      status: "受付済み",
-    },
-    {
-      id: 5,
-      receivedAt: generateRelativeDatetime(4),
-      channel: "電話",
-      applicantName: "伊藤健太",
-      applicantKana: "イトウケンタ",
-      birthDate: "1982-07-05",
-      gender: "男性",
-      phone: "092-5678-9012",
-      email: "ito@example.com",
-      address: "福岡県福岡市博多区5-5-5",
-      occupation: "エンジニア",
-      company: "福岡テック株式会社",
-      annualIncome: "650",
-      loanAmount: "3500",
-      loanPurpose: "住宅購入",
-      loanPeriod: "35",
-      status: "審査中",
-    },
-    {
-      id: 6,
-      receivedAt: generateRelativeDatetime(2),
-      channel: "店舗",
-      applicantName: "渡辺直子",
-      applicantKana: "ワタナベナオコ",
-      birthDate: "1988-11-30",
-      gender: "女性",
-      phone: "011-6789-0123",
-      email: "watanabe@example.com",
-      address: "北海道札幌市中央区6-6-6",
-      occupation: "看護師",
-      company: "札幌総合病院",
-      annualIncome: "480",
-      loanAmount: "2200",
-      loanPurpose: "住宅購入",
-      loanPeriod: "30",
-      status: "受付済み",
-    },
-    {
-      id: 7,
-      receivedAt: generateRelativeDatetime(3),
-      channel: "FAX",
-      applicantName: "中村雅人",
-      applicantKana: "ナカムラマサト",
-      birthDate: "1978-04-12",
-      gender: "男性",
-      phone: "022-7890-1234",
-      email: "nakamura@example.com",
-      address: "宮城県仙台市青葉区7-7-7",
-      occupation: "教師",
-      company: "仙台市立中学校",
-      annualIncome: "520",
-      loanAmount: "2800",
-      loanPurpose: "リフォーム",
-      loanPeriod: "15",
-      status: "確認中",
-    },
-    {
-      id: 8,
-      receivedAt: generateRelativeDatetime(4),
-      channel: "メール",
-      applicantName: "小林由美",
-      applicantKana: "コバヤシユミ",
-      birthDate: "1992-09-25",
-      gender: "女性",
-      phone: "075-8901-2345",
-      email: "kobayashi@example.com",
-      address: "京都府京都市下京区8-8-8",
-      occupation: "デザイナー",
-      company: "京都デザイン事務所",
-      annualIncome: "420",
-      loanAmount: "1800",
-      loanPurpose: "教育資金",
-      loanPeriod: "10",
-      status: "受付中",
-    },
-  ]
-
-  const getApplicationData = (id: string) => {
-    const foundApplication = sampleApplications.find((app) => app.id === Number.parseInt(id))
-    if (foundApplication) {
-      return {
-        applicantName: foundApplication.applicantName,
-        applicantKana: foundApplication.applicantKana,
-        birthDate: foundApplication.birthDate,
-        phone: foundApplication.phone,
-        email: foundApplication.email,
-        address: foundApplication.address,
-        loanAmount: foundApplication.loanAmount,
-        loanPurpose: foundApplication.loanPurpose,
-      }
-    }
-    // デフォルトデータ（新規申込の場合）
-    return {
-      applicantName: "",
-      applicantKana: "",
-      birthDate: "",
-      phone: "",
-      email: "",
-      address: "",
-      loanAmount: "",
-      loanPurpose: "",
-    }
-  }
+  const [applicationData, setApplicationData] = useState<any>(null)
+  const [sampleFiles, setSampleFiles] = useState<any[]>([])
 
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [fileType, setFileType] = useState<"pdf" | "image">("pdf")
-  const [selectedFile, setSelectedFile] = useState("/sample-application1.pdf")
+  const [selectedFile, setSelectedFile] = useState("")
 
   const [imageTransform, setImageTransform] = useState({
     scale: 1,
@@ -237,16 +57,32 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
 
-  const sampleFiles = [
-    { name: "申込書1（PDF）", path: "/sample-application1.pdf", type: "pdf" as const },
-    { name: "送付状（PDF）", path: "/documents/cover-letter.pdf", type: "pdf" as const },
-    { name: "正式審査申込書（PDF）", path: "/documents/formal-application.pdf", type: "pdf" as const },
-  ]
-
-  const [applicationData, setApplicationData] = useState(() => getApplicationData(params.id))
-
   useEffect(() => {
-    setApplicationData(getApplicationData(params.id))
+    const fetchData = async () => {
+      if (params.id) {
+        const appRes = await fetch(`/api/applications/${params.id}`)
+        if (appRes.ok) {
+          const appData = await appRes.json()
+          setApplicationData(appData)
+        }
+      }
+      const docsRes = await fetch("/api/documents")
+      if (docsRes.ok) {
+        const docsData = await docsRes.json()
+        const pdfDocs = docsData
+          .filter((doc: any) => doc.pdfPath)
+          .map((doc: any) => ({
+            name: doc.name,
+            path: doc.pdfPath,
+            type: "pdf" as const,
+          }))
+        setSampleFiles(pdfDocs)
+        if (pdfDocs.length > 0) {
+          setSelectedFile(pdfDocs[0].path)
+        }
+      }
+    }
+    fetchData()
   }, [params.id])
 
   const [zoomInput, setZoomInput] = useState("100")
@@ -257,13 +93,15 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
       setSelectedFile(filePath)
       setFileType(file.type)
       setCurrentPage(1)
-      setTotalPages(file.type === "pdf" ? 3 : 1) // PDFは3ページ、画像は1ページとして設定
+      // NOTE: PDF page count is not available, so we'll just set it to 1 for now.
+      // A more advanced implementation would require a PDF library to get the page count.
+      setTotalPages(1)
       handleResetImage()
     }
   }
 
   const handleInputChange = (field: string, value: string) => {
-    setApplicationData((prev) => ({
+    setApplicationData((prev: any) => ({
       ...prev,
       [field]: value,
     }))
@@ -522,7 +360,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Label htmlFor="applicantName">申込者名</Label>
                   <Input
                     id="applicantName"
-                    value={applicationData.applicantName}
+                    value={applicationData?.applicantName || ""}
                     onChange={(e) => handleInputChange("applicantName", e.target.value)}
                   />
                 </div>
@@ -531,7 +369,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Label htmlFor="applicantKana">申込者名（カナ）</Label>
                   <Input
                     id="applicantKana"
-                    value={applicationData.applicantKana}
+                    value={applicationData?.applicantKana || ""}
                     onChange={(e) => handleInputChange("applicantKana", e.target.value)}
                   />
                 </div>
@@ -541,7 +379,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Input
                     id="birthDate"
                     type="date"
-                    value={applicationData.birthDate}
+                    value={applicationData?.birthDate || ""}
                     onChange={(e) => handleInputChange("birthDate", e.target.value)}
                   />
                 </div>
@@ -550,7 +388,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Label htmlFor="phone">電話番号</Label>
                   <Input
                     id="phone"
-                    value={applicationData.phone}
+                    value={applicationData?.phone || ""}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                   />
                 </div>
@@ -560,7 +398,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Input
                     id="email"
                     type="email"
-                    value={applicationData.email}
+                    value={applicationData?.email || ""}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                   />
                 </div>
@@ -569,7 +407,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Label htmlFor="address">住所</Label>
                   <Textarea
                     id="address"
-                    value={applicationData.address}
+                    value={applicationData?.address || ""}
                     onChange={(e) => handleInputChange("address", e.target.value)}
                     rows={2}
                   />
@@ -580,7 +418,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Input
                     id="loanAmount"
                     type="number"
-                    value={applicationData.loanAmount}
+                    value={applicationData?.loanAmount || ""}
                     onChange={(e) => handleInputChange("loanAmount", e.target.value)}
                   />
                 </div>
@@ -589,7 +427,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
                   <Label htmlFor="loanPurpose">融資目的</Label>
                   <Input
                     id="loanPurpose"
-                    value={applicationData.loanPurpose}
+                    value={applicationData?.loanPurpose || ""}
                     onChange={(e) => handleInputChange("loanPurpose", e.target.value)}
                   />
                 </div>

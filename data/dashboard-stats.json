@@ -1,0 +1,44 @@
+[
+  {
+    "title": "申込受付",
+    "count": 8,
+    "change": 2,
+    "icon": "FileText",
+    "color": "bg-blue-500"
+  },
+  {
+    "title": "担保評価",
+    "count": 12,
+    "change": 1,
+    "icon": "Building2",
+    "color": "bg-green-500"
+  },
+  {
+    "title": "個信照会",
+    "count": 10,
+    "change": -1,
+    "icon": "User",
+    "color": "bg-yellow-500"
+  },
+  {
+    "title": "スコアリング",
+    "count": 8,
+    "change": 3,
+    "icon": "Search",
+    "color": "bg-purple-500"
+  },
+  {
+    "title": "与信判定",
+    "count": 7,
+    "change": 0,
+    "icon": "CheckCircle",
+    "color": "bg-orange-500"
+  },
+  {
+    "title": "結果回答",
+    "count": 5,
+    "change": -2,
+    "icon": "Mail",
+    "color": "bg-red-500"
+  }
+]
