@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [responseMethod, setResponseMethod] = useState("email")
   const [responseText, setResponseText] = useState("")
   const [previewOpen, setPreviewOpen] = useState(false)
+  const [selectedDefinition, setSelectedDefinition] = useState<number | null>(null)
 
   const [dashboardStats, setDashboardStats] = useState<any[]>([])
   const [applicationData, setApplicationData] = useState<any[]>([])
@@ -91,7 +92,31 @@ export default function DashboardPage() {
     return targetDate.toISOString().split("T")[0]
   }
 
-  const generateRelativeDatetime = (daysAgo: number, hour: number, minute: number) => {
+   const extractionDefinitions = [
+    {
+      id: 1,
+      name: "住宅ローン　申込実績",
+      creator: "審査部A",
+      createdDate: "2024-01-15",
+    },
+    {
+      id: 2,
+      name: "金融機関別　申込実績",
+      creator: "審査部B",
+      createdDate: "2024-01-20",
+    },
+  ]
+
+  const handleDefinitionSelect = (id: number) => {
+    setSelectedDefinition(id)
+  }
+
+  const handleSelectAll = () => {
+    // This function is no longer needed as we are using single selection.
+    // It can be removed or kept as a no-op if it's part of a larger refactor.
+  }
+
+ const generateRelativeDatetime = (daysAgo: number, hour: number, minute: number) => {
     const today = new Date()
     const targetDate = new Date(today)
     targetDate.setDate(today.getDate() - daysAgo)
@@ -774,27 +799,51 @@ export default function DashboardPage() {
         </div>
       )
     }
-    
+
     if (activeMenu === "management") {
       return (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">案件管理</h2>
+            <div className="flex gap-4">
+              <Button className="min-w-32">新規</Button>
+              <Button variant="outline" className="min-w-32 bg-transparent">
+                出力
+              </Button>
+            </div>
           </div>
 
           <Card>
-            <CardContent className="p-12">
-              <div className="flex flex-col items-center justify-center space-y-6">
-                <Database className="h-16 w-16 text-muted-foreground" />
-                <p className="text-lg text-muted-foreground">案件管理機能</p>
-                <div className="flex gap-4">
-                  <Button size="lg" className="min-w-32">
-                    新規
-                  </Button>
-                  <Button size="lg" variant="outline" className="min-w-32 bg-transparent">
-                    出力
-                  </Button>
-                </div>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="text-left p-4 font-medium w-16">選択</th>
+                      <th className="text-left p-4 font-medium">抽出定義名称</th>
+                      <th className="text-left p-4 font-medium">作成者</th>
+                      <th className="text-left p-4 font-medium">作成日</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {extractionDefinitions.map((definition) => (
+                      <tr key={definition.id} className="border-t hover:bg-muted/30">
+                        <td className="p-4">
+                          <input
+                            type="radio"
+                            name="definition-selection"
+                            checked={selectedDefinition === definition.id}
+                            onChange={() => handleDefinitionSelect(definition.id)}
+                            className="h-4 w-4"
+                          />
+                        </td>
+                        <td className="p-4">{definition.name}</td>
+                        <td className="p-4">{definition.creator}</td>
+                        <td className="p-4">{definition.createdDate}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </CardContent>
           </Card>
