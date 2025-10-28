@@ -774,6 +774,33 @@ export default function DashboardPage() {
         </div>
       )
     }
+    
+    if (activeMenu === "management") {
+      return (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">案件管理</h2>
+          </div>
+
+          <Card>
+            <CardContent className="p-12">
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <Database className="h-16 w-16 text-muted-foreground" />
+                <p className="text-lg text-muted-foreground">案件管理機能</p>
+                <div className="flex gap-4">
+                  <Button size="lg" className="min-w-32">
+                    新規
+                  </Button>
+                  <Button size="lg" variant="outline" className="min-w-32 bg-transparent">
+                    出力
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )
+    }
 
     return (
       <div className="flex items-center justify-center h-64">
