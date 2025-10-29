@@ -25,6 +25,8 @@ import {
   ChevronRight,
   Eye,
   Send,
+  Pencil,
+  Trash2,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Label } from "@/components/ui/label"
@@ -806,7 +808,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">案件管理</h2>
             <div className="flex gap-4">
-              <Button className="min-w-32">新規</Button>
+              <Button className="min-w-32" onClick={() => router.push("/dashboard/extraction-definition/new")}>
+                新規
+              </Button>
               <Button variant="outline" className="min-w-32 bg-transparent">
                 出力
               </Button>
@@ -823,6 +827,7 @@ export default function DashboardPage() {
                       <th className="text-left p-4 font-medium">抽出定義名称</th>
                       <th className="text-left p-4 font-medium">作成者</th>
                       <th className="text-left p-4 font-medium">作成日</th>
+                      <th className="text-left p-4 font-medium w-32">操作</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -840,6 +845,30 @@ export default function DashboardPage() {
                         <td className="p-4">{definition.name}</td>
                         <td className="p-4">{definition.creator}</td>
                         <td className="p-4">{definition.createdDate}</td>
+                        <td className="p-4">
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => router.push(`/dashboard/extraction-definition/${definition.id}`)}
+                              title="編集"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                if (confirm(`「${definition.name}」を削除しますか？`)) {
+                                  alert(`削除: ${definition.name}`)
+                                }
+                              }}
+                              title="削除"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
