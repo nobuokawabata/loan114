@@ -200,7 +200,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
 
   const handleSave = () => {
     alert("修正内容を保存しました")
-    router.back()
+    router.push(`/application/${params.id}`)
   }
 
   const renderDocumentViewer = () => {
@@ -247,7 +247,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
       <header className="bg-card border-b border-border">
         <div className="px-6 py-4">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <Button variant="ghost" size="sm" onClick={() => router.push(`/application/${params.id}`)}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               戻る
             </Button>
@@ -436,7 +436,7 @@ export default function VerifyPage({ params }: { params: { id: string } }) {
 
             {/* 保存ボタン */}
             <div className="flex justify-end space-x-3">
-              <Button variant="outline" onClick={() => router.back()}>
+              <Button variant="outline" onClick={() => router.push(`/application/${params.id}`)}>
                 キャンセル
               </Button>
               <Button onClick={handleSave}>
