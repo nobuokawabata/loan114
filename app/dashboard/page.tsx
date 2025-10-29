@@ -848,7 +848,7 @@ export default function DashboardPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => alert(`編集: ${definition.name}`)}
+                              onClick={() => router.push(`/dashboard/extraction-definition/${definition.id}`)}
                               title="編集"
                             >
                               <Pencil className="h-4 w-4" />
