@@ -808,7 +808,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">案件管理</h2>
             <div className="flex gap-4">
-              <Button className="min-w-32">新規</Button>
+              <Button className="min-w-32" onClick={() => router.push("/dashboard/extraction-definition/new")}>
+                新規
+              </Button>
               <Button variant="outline" className="min-w-32 bg-transparent">
                 出力
               </Button>
