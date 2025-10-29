@@ -101,7 +101,7 @@ export default function ApplicationInputPage({ params }: { params: { id: string 
       <header className="bg-card border-b border-border">
         <div className="px-6 py-4">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               戻る
             </Button>
