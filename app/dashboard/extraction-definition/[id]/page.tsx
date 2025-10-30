@@ -188,7 +188,7 @@ export default function ExtractionDefinitionPage() {
 
   const handleSave = () => {
     console.log("[v0] 保存処理を実行")
-    console.log("[v0] 抽出定義名称:", definitionName || definition?.name)
+    console.log("[v0] 抽出定義名称:", definitionName)
     console.log("[v0] 選択テーブル:", selectedTable)
     console.log("[v0] 抽出項目:", extractedColumns)
     console.log("[v0] 抽出条件:", conditionItems)
@@ -196,15 +196,24 @@ export default function ExtractionDefinitionPage() {
   }
 
   useEffect(() => {
-    if (!isNewMode && definition) {
-      const data = extractionDefinitionData[definition.id as keyof typeof extractionDefinitionData]
-      if (data) {
-        setSelectedTable(data.selectedTable)
-        setExtractedColumns(data.extractedColumns)
-        setConditionItems(data.conditionItems)
+    if (!isNewMode) {
+      const currentDefinition = extractionDefinitions.find((def) => def.id === Number(id))
+      if (currentDefinition) {
+        setDefinitionName(currentDefinition.name)
+        const data = extractionDefinitionData[currentDefinition.id as keyof typeof extractionDefinitionData]
+        if (data) {
+          setSelectedTable(data.selectedTable)
+          setExtractedColumns(data.extractedColumns)
+          setConditionItems(data.conditionItems)
+        }
       }
+    } else {
+      setDefinitionName("")
+      setSelectedTable("")
+      setExtractedColumns([])
+      setConditionItems([])
     }
-  }, [isNewMode, definition])
+  }, [id, isNewMode])
 
   if (!isNewMode && !definition) {
     return (
@@ -223,221 +232,237 @@ export default function ExtractionDefinitionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-background">
+      {/* 固定ヘッダーとして配置 */}
+      <div className="sticky top-0 z-20 bg-background border-b px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
           <Button variant="outline" onClick={() => router.push("/dashboard?menu=management")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             戻る
           </Button>
-          {isNewMode ? (
-            <Input
-              value={definitionName}
-              onChange={(e) => setDefinitionName(e.target.value)}
-              placeholder="抽出定義名称を入力"
-              className="text-2xl font-bold h-auto py-2 max-w-md"
-            />
-          ) : (
-            <h1 className="text-2xl font-bold">{definition?.name}</h1>
-          )}
+          <Input
+            value={definitionName}
+            onChange={(e) => setDefinitionName(e.target.value)}
+            placeholder="抽出定義名称を入力"
+            className="text-2xl font-bold h-auto py-2 max-w-md"
+          />
         </div>
+      </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>テーブル情報</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">テーブル名</label>
-                <Select value={selectedTable} onValueChange={setSelectedTable}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="テーブルを選択" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tableDefinitions.map((table) => (
-                      <SelectItem key={table.name} value={table.name}>
-                        {table.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="col-span-2">
-                <label className="text-sm font-medium mb-2 block">項目情報</label>
-                {selectedTableData ? (
-                  <div className="border rounded-lg overflow-hidden">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="bg-muted/50 border-b">
-                          <th className="px-4 py-3 text-left text-sm font-medium">項目名称</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium">データ型</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium">サイズ</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedTableData.columns.map((column, index) => (
-                          <tr
-                            key={index}
-                            draggable
-                            onDragStart={() => handleDragStart(column)}
-                            className="border-b last:border-0 hover:bg-muted/30 cursor-move"
-                          >
-                            <td className="px-4 py-3 text-sm">{column.name}</td>
-                            <td className="px-4 py-3 text-sm">{column.dataType}</td>
-                            <td className="px-4 py-3 text-sm">{column.size}</td>
-                          </tr>
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-[450px_1fr] gap-6">
+            {/* 左側：テーブル情報セクション（固定） */}
+            <div className="sticky top-[73px] self-start">
+              <Card>
+                <CardHeader>
+                  <CardTitle>テーブル情報</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">テーブル名</label>
+                    <Select value={selectedTable} onValueChange={setSelectedTable}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="テーブルを選択" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {tableDefinitions.map((table) => (
+                          <SelectItem key={table.name} value={table.name}>
+                            {table.name}
+                          </SelectItem>
                         ))}
-                      </tbody>
-                    </table>
+                      </SelectContent>
+                    </Select>
                   </div>
-                ) : (
-                  <div className="border rounded-lg p-8 text-center text-muted-foreground">
-                    テーブルを選択してください
+
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">項目情報</label>
+                    {selectedTableData ? (
+                      <div className="border rounded-lg overflow-hidden">
+                        <div className="max-h-[560px] overflow-y-auto">
+                          <table className="w-full">
+                            <thead className="sticky top-0 bg-muted/50 z-10">
+                              <tr className="border-b">
+                                <th className="px-4 py-3 text-left text-sm font-medium">項目名称</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">データ型</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">サイズ</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {selectedTableData.columns.map((column, index) => (
+                                <tr
+                                  key={index}
+                                  draggable
+                                  onDragStart={() => handleDragStart(column)}
+                                  className="border-b last:border-0 hover:bg-muted/30 cursor-move"
+                                >
+                                  <td className="px-4 py-3 text-sm">{column.name}</td>
+                                  <td className="px-4 py-3 text-sm">{column.dataType}</td>
+                                  <td className="px-4 py-3 text-sm">{column.size}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border rounded-lg p-8 text-center text-muted-foreground">
+                        テーブルを選択してください
+                      </div>
+                    )}
                   </div>
-                )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 右側：抽出項目と抽出条件セクション（スクロール可能） */}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>抽出項目</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    className="min-h-[200px] border-2 border-dashed rounded-lg p-4"
+                  >
+                    {extractedColumns.length === 0 ? (
+                      <div className="flex items-center justify-center h-[180px] text-muted-foreground">
+                        テーブル情報から項目をドラッグ＆ドロップしてください
+                      </div>
+                    ) : (
+                      <div className="border rounded-lg overflow-hidden">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="bg-muted/50 border-b">
+                              <th className="px-4 py-3 text-left text-sm font-medium w-16">No</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium">テーブル名</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium">項目名称</th>
+                              <th className="px-4 py-3 text-center text-sm font-medium w-24">グループ化</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium w-20">操作</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {extractedColumns.map((column, index) => (
+                              <tr key={index} className="border-b last:border-0">
+                                <td className="px-4 py-3 text-sm">{index + 1}</td>
+                                <td className="px-4 py-3 text-sm">{column.tableName}</td>
+                                <td className="px-4 py-3 text-sm">{column.columnName}</td>
+                                <td className="px-4 py-3 text-sm">
+                                  <div className="flex justify-center items-center">
+                                    <Checkbox
+                                      checked={column.groupBy}
+                                      onCheckedChange={() => handleToggleGroupBy(index)}
+                                    />
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3 text-sm">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveColumn(index)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>抽出条件</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div
+                    onDragOver={handleDragOver}
+                    onDrop={handleConditionDrop}
+                    className="min-h-[200px] border-2 border-dashed rounded-lg p-4"
+                  >
+                    {conditionItems.length === 0 ? (
+                      <div className="flex items-center justify-center h-[180px] text-muted-foreground">
+                        テーブル情報から項目をドラッグ＆ドロップしてください
+                      </div>
+                    ) : (
+                      <div className="border rounded-lg overflow-hidden">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="bg-muted/50 border-b">
+                              <th className="px-4 py-3 text-left text-sm font-medium w-16">No</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium">項目名称</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium w-32">演算子</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium">条件値</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium w-20">操作</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {conditionItems.map((item, index) => (
+                              <tr key={index} className="border-b last:border-0">
+                                <td className="px-4 py-3 text-sm">{index + 1}</td>
+                                <td className="px-4 py-3 text-sm">{item.columnName}</td>
+                                <td className="px-4 py-3 text-sm">
+                                  <Select
+                                    value={item.operator}
+                                    onValueChange={(value) => handleOperatorChange(index, value)}
+                                  >
+                                    <SelectTrigger className="h-8">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="=">=</SelectItem>
+                                      <SelectItem value=">">{">"}</SelectItem>
+                                      <SelectItem value=">=">{">="}</SelectItem>
+                                      <SelectItem value="<">{"<"}</SelectItem>
+                                      <SelectItem value="<=">{"<="}</SelectItem>
+                                      <SelectItem value="LIKE">LIKE</SelectItem>
+                                      <SelectItem value="<>">{"<>"}</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </td>
+                                <td className="px-4 py-3 text-sm">
+                                  <Input
+                                    value={item.value}
+                                    onChange={(e) => handleValueChange(index, e.target.value)}
+                                    placeholder="条件値を入力"
+                                    className="h-8"
+                                  />
+                                </td>
+                                <td className="px-4 py-3 text-sm">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRemoveCondition(index)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex justify-end">
+                <Button onClick={handleSave} size="lg">
+                  保存
+                </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>抽出項目</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              className="min-h-[200px] border-2 border-dashed rounded-lg p-4"
-            >
-              {extractedColumns.length === 0 ? (
-                <div className="flex items-center justify-center h-[180px] text-muted-foreground">
-                  テーブル情報から項目をドラッグ＆ドロップしてください
-                </div>
-              ) : (
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-muted/50 border-b">
-                        <th className="px-4 py-3 text-left text-sm font-medium w-16">No</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium">テーブル名</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium">項目名称</th>
-                        <th className="px-4 py-3 text-center text-sm font-medium w-24">グループ化</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium w-20">操作</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {extractedColumns.map((column, index) => (
-                        <tr key={index} className="border-b last:border-0">
-                          <td className="px-4 py-3 text-sm">{index + 1}</td>
-                          <td className="px-4 py-3 text-sm">{column.tableName}</td>
-                          <td className="px-4 py-3 text-sm">{column.columnName}</td>
-                          <td className="px-4 py-3 text-sm">
-                            <div className="flex justify-center items-center">
-                              <Checkbox checked={column.groupBy} onCheckedChange={() => handleToggleGroupBy(index)} />
-                            </div>
-                          </td>
-                          <td className="px-4 py-3 text-sm">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleRemoveColumn(index)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>抽出条件</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              onDragOver={handleDragOver}
-              onDrop={handleConditionDrop}
-              className="min-h-[200px] border-2 border-dashed rounded-lg p-4"
-            >
-              {conditionItems.length === 0 ? (
-                <div className="flex items-center justify-center h-[180px] text-muted-foreground">
-                  テーブル情報から項目をドラッグ＆ドロップしてください
-                </div>
-              ) : (
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-muted/50 border-b">
-                        <th className="px-4 py-3 text-left text-sm font-medium w-16">No</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium">項目名称</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium w-32">演算子</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium">条件値</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium w-20">操作</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {conditionItems.map((item, index) => (
-                        <tr key={index} className="border-b last:border-0">
-                          <td className="px-4 py-3 text-sm">{index + 1}</td>
-                          <td className="px-4 py-3 text-sm">{item.columnName}</td>
-                          <td className="px-4 py-3 text-sm">
-                            <Select value={item.operator} onValueChange={(value) => handleOperatorChange(index, value)}>
-                              <SelectTrigger className="h-8">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="=">=</SelectItem>
-                                <SelectItem value=">">{">"}</SelectItem>
-                                <SelectItem value=">=">{">="}</SelectItem>
-                                <SelectItem value="<">{"<"}</SelectItem>
-                                <SelectItem value="<=">{"<="}</SelectItem>
-                                <SelectItem value="LIKE">LIKE</SelectItem>
-                                <SelectItem value="<>">{"<>"}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </td>
-                          <td className="px-4 py-3 text-sm">
-                            <Input
-                              value={item.value}
-                              onChange={(e) => handleValueChange(index, e.target.value)}
-                              placeholder="条件値を入力"
-                              className="h-8"
-                            />
-                          </td>
-                          <td className="px-4 py-3 text-sm">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleRemoveCondition(index)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-end">
-          <Button onClick={handleSave} size="lg">
-            保存
-          </Button>
         </div>
       </div>
     </div>
