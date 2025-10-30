@@ -188,7 +188,7 @@ export default function ExtractionDefinitionPage() {
 
   const handleSave = () => {
     console.log("[v0] 保存処理を実行")
-    console.log("[v0] 抽出定義名称:", definitionName || definition?.name)
+    console.log("[v0] 抽出定義名称:", definitionName)
     console.log("[v0] 選択テーブル:", selectedTable)
     console.log("[v0] 抽出項目:", extractedColumns)
     console.log("[v0] 抽出条件:", conditionItems)
@@ -196,15 +196,24 @@ export default function ExtractionDefinitionPage() {
   }
 
   useEffect(() => {
-    if (!isNewMode && definition) {
-      const data = extractionDefinitionData[definition.id as keyof typeof extractionDefinitionData]
-      if (data) {
-        setSelectedTable(data.selectedTable)
-        setExtractedColumns(data.extractedColumns)
-        setConditionItems(data.conditionItems)
+    if (!isNewMode) {
+      const currentDefinition = extractionDefinitions.find((def) => def.id === Number(id))
+      if (currentDefinition) {
+        setDefinitionName(currentDefinition.name)
+        const data = extractionDefinitionData[currentDefinition.id as keyof typeof extractionDefinitionData]
+        if (data) {
+          setSelectedTable(data.selectedTable)
+          setExtractedColumns(data.extractedColumns)
+          setConditionItems(data.conditionItems)
+        }
       }
+    } else {
+      setDefinitionName("")
+      setSelectedTable("")
+      setExtractedColumns([])
+      setConditionItems([])
     }
-  }, [isNewMode, definition])
+  }, [id, isNewMode])
 
   if (!isNewMode && !definition) {
     return (
@@ -230,16 +239,12 @@ export default function ExtractionDefinitionPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             戻る
           </Button>
-          {isNewMode ? (
-            <Input
-              value={definitionName}
-              onChange={(e) => setDefinitionName(e.target.value)}
-              placeholder="抽出定義名称を入力"
-              className="text-2xl font-bold h-auto py-2 max-w-md"
-            />
-          ) : (
-            <h1 className="text-2xl font-bold">{definition?.name}</h1>
-          )}
+          <Input
+            value={definitionName}
+            onChange={(e) => setDefinitionName(e.target.value)}
+            placeholder="抽出定義名称を入力"
+            className="text-2xl font-bold h-auto py-2 max-w-md"
+          />
         </div>
 
         <Card>
